@@ -1,6 +1,25 @@
 {% extends "layout.html" %}
 {% block title %}Login{% endblock %}
 {% block body %}
-<h1>Login</h1>
-
+<h1>Welcome</h1>
+<h2>Login</h2>
+<form id="login-form" action="" method="post">
+  <label>Phone Number:</label>
+  <input type="text" name="phonenumber" size="30" value="{{ request.form.phonenumber }}">
+  <label>Passkey:</label>
+  <input type="password" name="password" size="30" value="{{ request.form.password }}">
+  <div class="actions"><input type="submit" value="Log in"></div>
+</form>
+<h2>Register</h2>
+<form id="register-form" action="" method="post">
+  <dl>
+   <label>Phone Number:</label>
+    <input type="text" name="phonenumber" size="30" value="{{ request.form.phonenumber }}">
+    <label>Passkey:</label>
+    <input type="password" name="password1" size="30" value="{{ request.form.password1 }}">
+    <label>Passkey (confirmation):</label>
+    <input type="password" name="password2" size="30" value="{{ request.form.password2 }}">
+  </dl>
+  <div class="actions"><input type="submit" value="Register"></div>
+</form>
 {% endblock %}
