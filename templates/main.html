@@ -30,6 +30,7 @@ var phone = $("em.phone").html();
 console.log(phone);
 var tellerRef = new Firebase("https://teller.firebaseio.com/");
 var userRef = tellerRef.child('users/'+phone);
+var transRef = tellerRef.child('transactions');
 var moveUpdate = true;
 
 function getgeo(position) {
@@ -65,7 +66,20 @@ function addOtherFriends() {
                 'marker-color': '#84f897'
               })
           });
-          markie.bindPopup(key);
+          transRef.on("value", function(snapshot) {
+            trans = snapshot.val();
+            for (var transkey in trans) {
+              console.log("f", trans[transkey].from, key);
+              if (trans[transkey].from == key) {
+                var a = trans[transkey].amt;
+                if (a < 0)
+                  markie.bindPopup(key + "<br>deposit: " + Math.abs(a));
+                else
+                  markie.bindPopup(key + "<br>withdraw: " + a);
+                break;
+              }
+            }
+          });
           markie.addTo(map);
           other_markers.push(markie);
         }
