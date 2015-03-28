@@ -95,6 +95,8 @@ def sendmoney():
     firebase.put('/users/'+sender_phone, 'balance', session.get('balance'))
     firebase.put('/users/'+receiver_phone, 'balance', rec_balance)
     return redirect(url_for('main'))
+  if request.method == 'GET' and 'to' in request.args.keys():
+    return render_template('sendmoney.html', to=request.args.get('to'))
   return render_template('sendmoney.html')
 
 @app.route('/inserttransaction', methods=['POST'])

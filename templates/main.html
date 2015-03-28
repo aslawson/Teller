@@ -63,7 +63,7 @@ function addOtherFriends() {
           var userlong = users[key].longitude;
           var markie_default = L.marker([userlat, userlong], {
             icon: L.mapbox.marker.icon({
-              'marker-color': '#44c6f8'
+              'marker-color': '#f86767'
             }) //default
           });
           var markie_match = L.marker([userlat, userlong], {
@@ -81,10 +81,14 @@ function addOtherFriends() {
                 if (trans[transkey].to == phone) {
                   markie = markie_match;
                 }
+                var popup;
                 if (a < 0)
-                  markie.bindPopup(key + "<br>deposit: " + Math.abs(a));
+                  popup = (key + "<br>deposit: " + Math.abs(a));
                 else
-                  markie.bindPopup(key + "<br>withdraw: " + a);
+                  popup = (key + "<br>withdraw: " + a);
+                var link_out = "/sendmoney?to="+trans[transkey].from;
+                popup += "<br><a class='bubble' href='"+link_out+"'>Go</a>"
+                markie.bindPopup(popup);
                 break;
               }
             }
@@ -102,7 +106,7 @@ var map = L.mapbox.map('map', 'examples.map-h67hf2ic')
   .setView([29, -26], 14);
 var marker = L.marker([-73, 40], {
     icon: L.mapbox.marker.icon({
-      'marker-color': '#f86767'
+      'marker-color': '#44c6f8'
     })
 });
 

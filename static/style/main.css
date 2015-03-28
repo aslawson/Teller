@@ -49,6 +49,9 @@ a {
   font-size: 25px;
   letter-spacing: 0px;
 }
+a.bubble {
+  font-size: 12px;
+}
 i {
   color: #68c0ef;
   position: absolute;
