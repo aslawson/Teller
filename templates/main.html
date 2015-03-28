@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block title %}Main{% endblock %}
+{% block nav %}
+  <a href="/sendmoney"><i class="fa fa-paper-plane-o"></i></a>
+{% endblock %}
+{% block body %}
+<small class="notif">Welcome <em class="phone">phone_number</em></small>
+<div class="middle-area">
+  <div id='map'></div>
+</div>
+<form id="login-form" action="inserttransaction" method="post">
+  <label>Amount</label>
+  <input type="text" name="amount" size="30" value="{{ request.form.amount }}" placeholder="00.00">
+  <input type="radio" name="transaction_type" value="Deposit" checked>Deposit
+  <input type="radio" name="transaction_type" value="Withdraw">Withdraw
+  <div class="actions"><input type="submit" value="Find Transaction"></div>
+</form>
+<div>
+  <form align="right"  method="post" action="">
+      <label class="logoutLblPos">
+  <input name="submit2" type="submit"  value="log out">
+  </label>
+ </form>
+</div>
+
+<script>
+
+var phone = $("em.phone").html();
+console.log(phone);
+var tellerRef = new Firebase("https://teller.firebaseio.com/");
+var userRef = tellerRef.child('users/'+phone);
+var moveUpdate = true;
+
+function getgeo(position) {
+  var coords = position.coords;
+  var latitude = coords.latitude;
+  var longitude = coords.longitude;
+  var latlongobj = L.latLng(latitude, longitude);
+  console.log(latitude,longitude);
+  marker.setLatLng(latlongobj);
+  if (moveUpdate) {
+    map.panTo(latlongobj);
+    moveUpdate = false;
+  }
+  userRef.update({
+    latitude: latitude,
+    longitude: longitude,
+  });
+}
+
+function addOtherFriends() {
+  for (var i=0;i<other_markers.length;++i) {
+    map.removeLayer(other_markers[i]);
+  }
+  tellerRef.on("value", function(snapshot) {
+    var users = snapshot.val().users;
+    for (var key in users) {
+      if (key != phone) {
+        if ('latitude' in users[key]) {
+          var userlat = users[key].latitude;
+          var userlong = users[key].longitude;
+          var markie = L.marker([userlat, userlong], {
+              icon: L.mapbox.marker.icon({
+                'marker-color': '#84f897'
+              })
+          });
+          markie.bindPopup(key);
+          markie.addTo(map);
+          other_markers.push(markie);
+        }
+      }
+    }
+  });
+}
+
+L.mapbox.accessToken = 'pk.eyJ1IjoicmF5bW9uZGphY29ic29uIiwiYSI6IlVlWnVITTQifQ.lzpdThXgyxuWTS2WQBTqVg';
+var map = L.mapbox.map('map', 'examples.map-h67hf2ic')
+  .setView([29, -26], 14);
+var marker = L.marker([-73, 40], {
+    icon: L.mapbox.marker.icon({
+      'marker-color': '#f86767'
+    })
+});
+
+navigator.geolocation.getCurrentPosition(getgeo);
+var other_markers = [];
+addOtherFriends();
+window.setInterval(function() {
+  navigator.geolocation.getCurrentPosition(getgeo);
+}, 1000);
+window.setInterval(function() {
+  addOtherFriends();
+}, 10000);
+
+marker.addTo(map);
+</script>
+{% endblock %}
