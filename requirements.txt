@@ -1,0 +1,4 @@
+Flask
+pycrypto
+python-firebase
+urllib3
