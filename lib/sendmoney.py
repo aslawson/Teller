@@ -138,5 +138,6 @@ class SendMoney():
 
   def transfer_request(self, sender_phone, receiver_phone, amount):
     xml2 = self.generate_transaction_xml(sender_phone, receiver_phone, amount)
+    headers = {'Content-Type': 'application/xml'}
     r = requests.post(self._transfer_url, data=xml2, headers=headers)
-    print("yeah, bitch!")
+    print r.text

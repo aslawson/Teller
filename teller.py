@@ -79,10 +79,11 @@ def main():
 @app.route('/sendmoney', methods=['GET', 'POST'])
 def sendmoney():
   if request.method == 'POST': # sending money
-    sender_phone = ""
+    sender_phone = session['phone_number']
     receiver_phone = request.form['receiver_phone']
     amount = request.form['amount']
-    transfer_request(self, sender_phone, receiver_phone, amount)
+    send_money.transfer_request(sender_phone, receiver_phone, amount)
+    return redirect(url_for('main'))
   return render_template('sendmoney.html')
 
 @app.route('/inserttransaction', methods=['POST'])
