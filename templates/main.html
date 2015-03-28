@@ -61,17 +61,26 @@ function addOtherFriends() {
         if ('latitude' in users[key]) {
           var userlat = users[key].latitude;
           var userlong = users[key].longitude;
-          var markie = L.marker([userlat, userlong], {
-              icon: L.mapbox.marker.icon({
-                'marker-color': '#84f897'
-              })
+          var markie_default = L.marker([userlat, userlong], {
+            icon: L.mapbox.marker.icon({
+              'marker-color': '#44c6f8'
+            }) //default
           });
+          var markie_match = L.marker([userlat, userlong], {
+            icon: L.mapbox.marker.icon({
+              'marker-color': '#84f897'
+            }) //default
+          });
+          var markie = markie_default;
           transRef.on("value", function(snapshot) {
             trans = snapshot.val();
             for (var transkey in trans) {
-              console.log("f", trans[transkey].from, key);
               if (trans[transkey].from == key) {
                 var a = trans[transkey].amt;
+                console.log(trans[transkey].to==phone);
+                if (trans[transkey].to == phone) {
+                  markie = markie_match;
+                }
                 if (a < 0)
                   markie.bindPopup(key + "<br>deposit: " + Math.abs(a));
                 else
