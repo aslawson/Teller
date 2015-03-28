@@ -72,7 +72,7 @@ def main():
     return redirect(url_for('login'))
   return render_template('main.html')
 
-@app.route('/sendmoney', methods=['GET', 'POST')
+@app.route('/sendmoney', methods=['GET', 'POST'])
 def sendmoney():
   if request.method == 'POST': # sending money
     sender_phone = request.form['sender_phone']

@@ -2,6 +2,7 @@
 <head>
 <title>Teller</title>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main.css') }}">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
 <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
@@ -14,7 +15,7 @@
 <html>
 <body>
 <div class="container">
-  <header><h1><img src="{{ url_for('static', filename='teller.png') }}" width="30"/></h1></header>
+  <header><h1><a border="0" href="/"><img src="{{ url_for('static', filename='teller.png') }}" width="30"/></a>{% block nav %}{% endblock %}</h1></header>
   {% block body %}{% endblock %}
 </div>
 </body>

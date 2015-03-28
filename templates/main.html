@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}Main{% endblock %}
+{% block nav %}
+  <a href="/sendmoney"><i class="fa fa-paper-plane-o"></i></a>
+{% endblock %}
 {% block body %}
 <small class="notif">Welcome <em class="phone">phone_number</em></small>
 <div class="middle-area">
@@ -12,7 +15,7 @@
   <input type="radio" name="transaction_type" value="{{ request.form.deposit }}">Withdraw
   <div class="actions"><input type="submit" value="Find Transaction"></div>
 </form>
-<div style="float:right">
+<div>
   <form align="right"  method="post" action="">
       <label class="logoutLblPos">
   <input name="submit2" type="submit"  value="log out">

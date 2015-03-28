@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Send Money{% endblock %}
+{% block body %}
+<h1>Transfer Funds</h1>
+<form action="" method="post">
+  <label>Your Phone</label>
+  <input type="text" name="sender_phone" size="30" value="{{ request.form.sender_phone }}" placeholder="13014672873">
+  <label>Receiver's Phone</label>
+  <input type="text" name="receiver_phone" size="30" value="{{ request.form.receiver_phone }}" placeholder="13014672873">
+  <label>Amount</label>
+  <input type="password" name="amount" size="30" value="{{ request.form.amount }}" placeholder="100.00">
+  <div class="actions"><input type="submit" value="Send"></div>
+</form>
+{% endblock %}
