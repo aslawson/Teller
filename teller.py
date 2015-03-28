@@ -18,6 +18,22 @@ def login():
   # Handle data after the user clicks login or register
   if request.method == 'POST':
     if 'password2' not in request.form.keys(): # Logging in, not registering
+      phone_number = request.form['phonenumber']
+      password = request.form['password']
+      
+      result = firebase.get('/users/'+phone_number, None)
+      print result
+      # Are they a registered user?
+      if result == None:
+        print ('')#TODO - change "Invalid log in" statement to visabe
+      else:
+        hash_password = hashlib.sha224(password).hexdigest()
+        print hash_password
+        if u'hash_password' == hash_password:
+          # Successful Log In
+          session['logged_in'] = True
+        else: 
+          print ('')#TODO - change "Invalid log in" statement to visabe
       print 'login', request.form['phonenumber'], request.form['password']
     else: # Registering
       phone_number = request.form['phonenumber']
@@ -32,6 +48,7 @@ def login():
           insert_data = {
             'hash_password': hash_password
           }
+          
           inserted_user = firebase.post('/users/'+phone_number, insert_data)
           # All is good, the user is logged in!
           session['logged_in'] = True
@@ -40,14 +57,18 @@ def login():
     return redirect(url_for('main'))
   return render_template('login.html')
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def main():
   if not session.get('logged_in'):
     return redirect(url_for('login'))
   # Application logic
+  if request.method == 'POST':
+    session['logged_in'] = False
+    return redirect(url_for('login'))
   return render_template('main.html')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host = "0.0.0.0")
+    
 
 
