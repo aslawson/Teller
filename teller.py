@@ -62,14 +62,24 @@ def login():
 def main():
   if not session.get('logged_in'):
     return redirect(url_for('login'))
-  # Application logic
-  # send_money.setup_phone("6584517058", "5184680430000006", "expiry")
-  # send_money.setup_phone("13014672877", "5184680430000279", "expiry")
-  # send_money.setup_phone("13014672879", "5184680430000261", "expiry")
+  # Application logic -- Set up a phone
+  session['phone_number'] = ""
+  dummy_card = "5184680430000279"
+  dummy_expiry = "202001"
+  send_money.setup_phone(session['phone_number'], dummy_card, dummy_expiry)
   if request.method == 'POST':
     session['logged_in'] = False
     return redirect(url_for('login'))
   return render_template('main.html')
+
+@app.route('/sendmoney', methods=['GET', 'POST')
+def sendmoney():
+  if request.method == 'POST': # sending money
+    sender_phone = request.form['sender_phone']
+    receiver_phone = request.form['receiver_phone']
+    amount = request.form['amount']
+    transfer_request(self, sender_phone, receiver_phone, amount)
+  return render_template('sendmoney.html')
 
 if __name__ == '__main__':
     app.run(host = "0.0.0.0")

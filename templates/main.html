@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Main{% endblock %}
 {% block body %}
-<small class="notif">Welcome phone_number</small>
+<small class="notif">Welcome <em class="phone">phone_number</em></small>
 <div class="middle-area">
+  <div id='map'></div>
 </div>
 <form id="login-form" action="" method="post">
   <label>Amount</label>
@@ -18,47 +19,76 @@
   </label>
  </form>
 </div>
-{% endblock %}
-<!-- 
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset=utf-8 />
-<title>GeoJSON from live realtime data</title>
-<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
-<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet' />
-<style>
-  body { margin:0; padding:0; }
-  #map { position:absolute; top:0; bottom:0; width:100%; }
-</style>
-</head>
-<body>
-<div id='map'></div>
 <script>
-L.mapbox.accessToken = 'pk.eyJ1IjoiYXNsYXdzb24iLCJhIjoiMS1ZUnZvayJ9.S1uwWU9IczzLn9B9rl3KTg';
-var map = L.mapbox.map('map', 'examples.map-i86nkdio')
-    .setView([38, -102.0], 2);
 
-// As with any other AJAX request, this technique is subject to the Same Origin Policy:
-// http://en.wikipedia.org/wiki/Same_origin_policy
-var featureLayer = L.mapbox.featureLayer()
-    .loadURL('https://wanderdrone.appspot.com/')
-    // Once this layer loads, we set a timer to load it again in a few seconds.
-    .on('ready', run)
-    .addTo(map);
+var phone = $("em.phone").html();
+console.log(phone);
+var tellerRef = new Firebase("https://teller.firebaseio.com/");
+var userRef = tellerRef.child('users/'+phone);
+var moveUpdate = true;
 
-function run() {
-    featureLayer.eachLayer(function(l) {
-        map.panTo(l.getLatLng());
-    });
-    window.setTimeout(function() {
-        featureLayer.loadURL('https://wanderdrone.appspot.com/');
-    }, 2000);
+function getgeo(position) {
+  var coords = position.coords;
+  var latitude = coords.latitude;
+  var longitude = coords.longitude;
+  var latlongobj = L.latLng(latitude, longitude);
+  console.log(latitude,longitude);
+  marker.setLatLng(latlongobj);
+  if (moveUpdate) {
+    map.panTo(latlongobj);
+    moveUpdate = false;
+  }
+  userRef.update({
+    latitude: latitude,
+    longitude: longitude,
+  });
 }
+
+function addOtherFriends() {
+  for (var i=0;i<other_markers.length;++i) {
+    map.removeLayer(other_markers[i]);
+  }
+  tellerRef.on("value", function(snapshot) {
+    var users = snapshot.val().users;
+    for (var key in users) {
+      if (key != phone) {
+        if ('latitude' in users[key]) {
+          var userlat = users[key].latitude;
+          var userlong = users[key].longitude;
+          var markie = L.marker([userlat, userlong], {
+              icon: L.mapbox.marker.icon({
+                'marker-color': '#84f897'
+              })
+          });
+          markie.bindPopup(key);
+          markie.addTo(map);
+          other_markers.push(markie);
+        }
+      }
+    }
+  });
+}
+
+L.mapbox.accessToken = 'pk.eyJ1IjoicmF5bW9uZGphY29ic29uIiwiYSI6IlVlWnVITTQifQ.lzpdThXgyxuWTS2WQBTqVg';
+var map = L.mapbox.map('map', 'examples.map-h67hf2ic')
+  .setView([29, -26], 14);
+var marker = L.marker([-73, 40], {
+    icon: L.mapbox.marker.icon({
+      'marker-color': '#f86767'
+    })
+});
+
+navigator.geolocation.getCurrentPosition(getgeo);
+var other_markers = [];
+addOtherFriends();
+window.setInterval(function() {
+  navigator.geolocation.getCurrentPosition(getgeo);
+}, 1000);
+window.setInterval(function() {
+  addOtherFriends();
+}, 10000);
+
+marker.addTo(map);
 </script>
-</body>
-</html>
->>>>>>> auth
- -->
+{% endblock %}

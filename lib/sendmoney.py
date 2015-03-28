@@ -13,7 +13,7 @@ class SendMoney():
     el_subscriber_type = ET.SubElement(el_create_mapping_request, 'SubscriberType')
     el_subscriber_type.text = "PHONE_NUMBER"
     el_account_usage = ET.SubElement(el_create_mapping_request, 'AccountUsage')
-    el_account_usage.text = "RECEIVING"
+    el_account_usage.text = "SEND_RECV"
     el_default_indicator = ET.SubElement(el_create_mapping_request, 'DefaultIndicator')
     el_default_indicator.text = "T"
     el_alias = ET.SubElement(el_create_mapping_request, 'Alias')
@@ -59,12 +59,13 @@ class SendMoney():
   def generate_transaction_xml(self, sender_phone, receiver_phone, amount):
     amount = str(amount)
     random19 = ''.join(str(random.randint(0,9)) for _ in xrange(19))
+    random3 = ''.join(str(random.randint(0,9)) for _ in xrange(3))
 
     el_transfer_request = ET.Element('TransferRequest')
     el_local_date = ET.SubElement(el_transfer_request, 'LocalDate')
     el_local_date.text = "0612"
     el_local_time = ET.SubElement(el_transfer_request, 'LocalTime')
-    el_local_time.text = "161222"
+    el_local_time.text = "161"+random3
     el_transaction_reference = ET.SubElement(el_transfer_request, 'TransactionReference')
     el_transaction_reference.text = random19;
 
@@ -128,20 +129,14 @@ class SendMoney():
     el_merchant_id.text = "123456"
     return ET.tostring(el_transfer_request)
 
-  def generate_transaction_respone_xml(xml_response):
-    return   
-
   def setup_phone(self, phone_number, credit_card_number, expiry):
     """takes a phone number and credit card and links them via mapping"""
-    card = "5184680430000006"
-    exp = "201401"
-    xml = self.generate_mapping_xml(phone_number, card, exp)
-    xml2 = self.generate_transaction_xml('13014672877', '6584517058', 200)
-    print xml2 #13014672877
+    xml = self.generate_mapping_xml(phone_number, credit_card_number, expiry)
     headers = {'Content-Type': 'application/xml'}
-    # r = requests.post(self._mapping_url, data=xml, headers=headers)
-    r = requests.post(self._transfer_url, data=xml2, headers=headers)
-    print "\n", r.text
+    r = requests.post(self._mapping_url, data=xml, headers=headers)
+    print "\n", r.text, "\n"
 
-  def transfer_request(self):
+  def transfer_request(self, sender_phone, receiver_phone, amount):
+    xml2 = self.generate_transaction_xml(sender_phone, receiver_phone, amount)
+    r = requests.post(self._transfer_url, data=xml2, headers=headers)
     print("yeah, bitch!")

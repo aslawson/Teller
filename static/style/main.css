@@ -23,9 +23,6 @@ header {
 }
 
 .middle-area {
-  background: #D9C1DE;
-  min-height: 40%;
-  width: 100%;
   margin: 20px auto;
 }
 
@@ -100,45 +97,5 @@ button {
 button:hover {
   background: #6dccfd;
 }
-/*}
-label {
-  display: block;
-}
-form {
-  text-align: center;
-}
-input {
-  margin: 0 auto;
-  display: block;
-  border: 5px solid #535cc6;
-  color: #535cc6;
-  box-shadow: none;
-  outline: none;
-  cursor: pointer;
-  height: 40px;
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 0px;
-  background: none;
-  width: 60%;
-  -webkit-transition: background 0.2s linear;
-  -moz-transition: background 0.2s linear;
-  -ms-transition: background 0.2s linear;
-  -o-transition: background 0.2s linear;
-  transition: background 0.2s linear;
-  padding: 10px 20px;
-}
-input[type=submit] {
-  background: #c6c9ec;
-  border: none;
-  width: 80%;
-  font-size: 20px;
-  text-transform: uppercase;
-  color: #FEFEFE;
-  height: 80px;
-}
 
-input:hover {
-  background: #535cc6;
-  color: #FEFEFE;
-}*/
+#map { position:relative; top:0; bottom:0; width: 400px; height:250px; }
