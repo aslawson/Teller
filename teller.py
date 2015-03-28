@@ -75,7 +75,7 @@ def main():
 @app.route('/sendmoney', methods=['GET', 'POST'])
 def sendmoney():
   if request.method == 'POST': # sending money
-    sender_phone = request.form['sender_phone']
+    sender_phone = ""
     receiver_phone = request.form['receiver_phone']
     amount = request.form['amount']
     transfer_request(self, sender_phone, receiver_phone, amount)
