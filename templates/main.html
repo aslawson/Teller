@@ -10,40 +10,62 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset=utf-8 />
-<title>GeoJSON from live realtime data</title>
-<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
-<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet' />
-<style>
-  body { margin:0; padding:0; }
-  #map { position:absolute; top:0; bottom:0; width:100%; }
-</style>
-</head>
 <body>
-<div id='map'></div>
+
+<p id="demo">Click the button to get your position.</p>
+
+<button onclick="getLocation()">Try It</button>
+
+<div id="mapholder"></div>
+
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
 <script>
-L.mapbox.accessToken = 'pk.eyJ1IjoiYXNsYXdzb24iLCJhIjoiMS1ZUnZvayJ9.S1uwWU9IczzLn9B9rl3KTg';
-var map = L.mapbox.map('map', 'examples.map-i86nkdio')
-    .setView([38, -102.0], 2);
+var x = document.getElementById("demo");
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(showPosition, showError);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
 
-// As with any other AJAX request, this technique is subject to the Same Origin Policy:
-// http://en.wikipedia.org/wiki/Same_origin_policy
-var featureLayer = L.mapbox.featureLayer()
-    .loadURL('https://wanderdrone.appspot.com/')
-    // Once this layer loads, we set a timer to load it again in a few seconds.
-    .on('ready', run)
-    .addTo(map);
+function showPosition(position) {
+    lat = position.coords.latitude;
+    lon = position.coords.longitude;
+    latlon = new google.maps.LatLng(lat, lon)
+    mapholder = document.getElementById('mapholder')
+    mapholder.style.height = '250px';
+    mapholder.style.width = '500px';
 
-function run() {
-    featureLayer.eachLayer(function(l) {
-        map.panTo(l.getLatLng());
-    });
-    window.setTimeout(function() {
-        featureLayer.loadURL('https://wanderdrone.appspot.com/');
-    }, 2000);
+    var myOptions = {
+    center:latlon,zoom:14,
+    mapTypeId:google.maps.MapTypeId.ROADMAP,
+    mapTypeControl:false,
+    navigationControlOptions:{style:google.maps.NavigationControlStyle.SMALL}
+    }
+    
+    var map = new google.maps.Map(document.getElementById("mapholder"), myOptions);
+    var marker = new google.maps.Marker({position:latlon,map:map,title:"You are here!"});
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+        case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+    }
 }
 </script>
+
 </body>
 </html>
