@@ -8,11 +8,11 @@
 <div class="middle-area">
   <div id='map'></div>
 </div>
-<form id="login-form" action="" method="post">
+<form id="login-form" action="inserttransaction" method="post">
   <label>Amount</label>
   <input type="text" name="amount" size="30" value="{{ request.form.amount }}" placeholder="00.00">
-  <input type="radio" name="transaction_type" value="{{ request.form.withdraw }}" checked>Deposit
-  <input type="radio" name="transaction_type" value="{{ request.form.deposit }}">Withdraw
+  <input type="radio" name="transaction_type" value="Deposit" checked>Deposit
+  <input type="radio" name="transaction_type" value="Withdraw">Withdraw
   <div class="actions"><input type="submit" value="Find Transaction"></div>
 </form>
 <div>
