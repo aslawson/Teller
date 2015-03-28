@@ -28,8 +28,9 @@ def login():
         print ('')#TODO - change "Invalid log in" statement to visabe
       else:
         hash_password = hashlib.sha224(password).hexdigest()
+        print result['hash_password']
         print hash_password
-        if u'hash_password' == hash_password:
+        if hash_password == result['hash_password']:
           # Successful Log In
           session['logged_in'] = True
         else: 
@@ -44,12 +45,8 @@ def login():
         user_exists = firebase.get('/users/'+phone_number, None)
         # Do they already have an account?
         if user_exists == None:
-          hash_password = hashlib.sha224(password1).hexdigest()
-          insert_data = {
-            'hash_password': hash_password
-          }
-          
-          inserted_user = firebase.post('/users/'+phone_number, insert_data)
+          hash_password = hashlib.sha224(password1).hexdigest()          
+          inserted_user = firebase.put('/users/'+phone_number, 'hash_password', hash_password)
           # All is good, the user is logged in!
           session['logged_in'] = True
       print 'register', request.form['phonenumber'], request.form['password2']
