@@ -70,7 +70,7 @@ def main():
   dummy_card = "5184680430000279"
   dummy_expiry = "202001"
   send_money.setup_phone(session['phone_number'], dummy_card, dummy_expiry)
-  if request.method == 'POST' and 'submit2' in form.get.keys():
+  if request.method == 'POST' and 'submit2' in request.form.keys():
     session['logged_in'] = False
     return redirect(url_for('login'))
   return render_template('main.html')
