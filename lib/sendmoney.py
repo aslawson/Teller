@@ -59,13 +59,13 @@ class SendMoney():
   def generate_transaction_xml(self, sender_phone, receiver_phone, amount):
     amount = str(amount)
     random19 = ''.join(str(random.randint(0,9)) for _ in xrange(19))
-    random3 = ''.join(str(random.randint(0,9)) for _ in xrange(3))
+    random3 = ''.join(str(random.randint(0,7)) for _ in xrange(3))
 
     el_transfer_request = ET.Element('TransferRequest')
     el_local_date = ET.SubElement(el_transfer_request, 'LocalDate')
     el_local_date.text = "0612"
     el_local_time = ET.SubElement(el_transfer_request, 'LocalTime')
-    el_local_time.text = "161"+random3
+    el_local_time.text = "161"+str(random3)
     el_transaction_reference = ET.SubElement(el_transfer_request, 'TransactionReference')
     el_transaction_reference.text = random19;
 
@@ -76,17 +76,12 @@ class SendMoney():
     el_subscriber_type.text = "PHONE_NUMBER"
     el_subscriber_alias = ET.SubElement(el_funding_mapped, 'SubscriberAlias')
     el_subscriber_alias.text = "TELLER CARD"
-    el_funding_UCAF = ET.SubElement(el_transfer_request, 'FundingUCAF')
-    el_funding_UCAF.text = "MjBjaGFyYWN0ZXJqdW5rVUNBRjU=1111"
-    el_funding_mastercard_id = ET.SubElement(el_transfer_request, 'FundingMasterCardAssignedId')
-    el_funding_mastercard_id.text = "123456"
 
     el_funding_amount = ET.SubElement(el_transfer_request, 'FundingAmount')
     el_receiving_value = ET.SubElement(el_funding_amount, 'Value')
     el_receiving_value.text = amount
     el_receiving_currency = ET.SubElement(el_funding_amount, 'Currency')
     el_receiving_currency.text = "702"
-
 
     el_receiving_mapped = ET.SubElement(el_transfer_request, 'ReceivingMapped')
     el_subscriber_id = ET.SubElement(el_receiving_mapped, 'SubscriberId')
@@ -140,4 +135,5 @@ class SendMoney():
     xml2 = self.generate_transaction_xml(sender_phone, receiver_phone, amount)
     headers = {'Content-Type': 'application/xml'}
     r = requests.post(self._transfer_url, data=xml2, headers=headers)
+    print xml2
     print r.text
