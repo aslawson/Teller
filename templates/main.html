@@ -1,8 +1,49 @@
 <h1>You logged in!</h1>
 <div style="float:right">
-<form align="right"  method="post" action="">
-  <label class="logoutLblPos">
+  <form align="right"  method="post" action="">
+      <label class="logoutLblPos">
   <input name="submit2" type="submit"  value="log out">
   </label>
-</form>
+ </form>
 </div>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>GeoJSON from live realtime data</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoiYXNsYXdzb24iLCJhIjoiMS1ZUnZvayJ9.S1uwWU9IczzLn9B9rl3KTg';
+var map = L.mapbox.map('map', 'examples.map-i86nkdio')
+    .setView([38, -102.0], 2);
+
+// As with any other AJAX request, this technique is subject to the Same Origin Policy:
+// http://en.wikipedia.org/wiki/Same_origin_policy
+var featureLayer = L.mapbox.featureLayer()
+    .loadURL('https://wanderdrone.appspot.com/')
+    // Once this layer loads, we set a timer to load it again in a few seconds.
+    .on('ready', run)
+    .addTo(map);
+
+function run() {
+    featureLayer.eachLayer(function(l) {
+        map.panTo(l.getLatLng());
+    });
+    window.setTimeout(function() {
+        featureLayer.loadURL('https://wanderdrone.appspot.com/');
+    }, 2000);
+}
+</script>
+</body>
+</html>
