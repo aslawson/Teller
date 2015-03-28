@@ -39,6 +39,7 @@ def login():
         if hash_password == result['hash_password']:
           # Successful Log In
           session['phone_number'] = phone_number
+          session['balance'] = firebase.get('/users/'+phone_number)['balance']
           session['logged_in'] = True
         else: 
           print ('')#TODO - change "Invalid log in" statement to visabe
@@ -56,6 +57,8 @@ def login():
           inserted_user = firebase.put('/users/'+phone_number, 'hash_password', hash_password)
           # All is good, the user is logged in!
           session['phone_number'] = phone_number
+          session['balance'] = 0.00
+          firebase.put('/users/'+phone_number, 'balance', session.get('balance'))
           session['logged_in'] = True
       print('register', request.form['phonenumber'], request.form['password2'])
   if session.get('logged_in'):
@@ -73,6 +76,8 @@ def main():
   if request.method == 'POST' and 'submit2' in request.form.keys():
     session['logged_in'] = False
     return redirect(url_for('login'))
+  if 'balance' in session.keys():
+    return render_template('main.html', phone_number=session['phone_number'], balance=session['balance'] )
   return render_template('main.html', phone_number=session['phone_number'])
 
 

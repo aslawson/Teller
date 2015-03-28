@@ -40,9 +40,10 @@ h2 {
   font-size: 15px;
   text-transform: uppercase;
 }
-small.notif {
+small {
   text-align: center;
   padding-bottom: 5px;
+  display: block;
 }
 a {
   font-size: 25px;
