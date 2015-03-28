@@ -48,7 +48,9 @@ def main():
   if not session.get('logged_in'):
     return redirect(url_for('login'))
   # Application logic
-  send_money.setup_phone("84517058", "5184680430000006", "expiry")
+  # send_money.setup_phone("6584517058", "5184680430000006", "expiry")
+  # send_money.setup_phone("13014672877", "5184680430000279", "expiry")
+  # send_money.setup_phone("13014672879", "5184680430000261", "expiry")
   return render_template('main.html')
 
 if __name__ == '__main__':

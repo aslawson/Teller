@@ -1,1 +1,14 @@
-<h1>You logged in!</h1>
+{% extends "layout.html" %}
+{% block title %}Main{% endblock %}
+{% block body %}
+<small class="notif">Welcome phone_number</small>
+<div class="middle-area">
+</div>
+<form id="login-form" action="" method="post">
+  <label>Amount</label>
+  <input type="text" name="amount" size="30" value="{{ request.form.amount }}" placeholder="00.00">
+  <input type="radio" name="transaction_type" value="{{ request.form.withdraw }}" checked>Deposit
+  <input type="radio" name="transaction_type" value="{{ request.form.deposit }}">Withdraw
+  <div class="actions"><input type="submit" value="Find Transaction"></div>
+</form>
+{% endblock %}
