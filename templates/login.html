@@ -3,6 +3,7 @@
 {% block body %}
 <h1>Teller</h1>
 <button class="login-button selected">Login</button>
+<link rel="stylesheet" href="../static/style/login.css" type="text/css">
 <form id="login-form" action="" method="post">
   <label>Phone Number</label>
   <input type="text" name="phonenumber" size="30" value="{{ request.form.phonenumber }}" placeholder="13014672873">
@@ -11,6 +12,7 @@
   <div class="actions"><input type="submit" value="Sign in"></div>
 </form>
 <button class="register-button">Register</button>
+<!-- <a id="invalid-LogIn">Invalid log in.  Please try again</a> -->
 <form id="register-form" action="" method="post">
   <dl>
    <label>Phone Number</label>

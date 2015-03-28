@@ -22,6 +22,24 @@ def login():
   if request.method == 'POST':
     if 'password2' not in request.form.keys(): # Logging in, not registering
       print('login', request.form['phonenumber'], request.form['password'])
+      phone_number = request.form['phonenumber']
+      password = request.form['password']
+      
+      result = firebase.get('/users/'+phone_number, None)
+      print result
+      # Are they a registered user?
+      if result == None:
+        print ('')#TODO - change "Invalid log in" statement to visabe
+      else:
+        hash_password = hashlib.sha224(password).hexdigest()
+        print result['hash_password']
+        print hash_password
+        if hash_password == result['hash_password']:
+          # Successful Log In
+          session['logged_in'] = True
+        else: 
+          print ('')#TODO - change "Invalid log in" statement to visabe
+      print 'login', request.form['phonenumber'], request.form['password']
     else: # Registering
       phone_number = request.form['phonenumber']
       password1 = request.form['password1']
@@ -31,11 +49,8 @@ def login():
         user_exists = firebase.get('/users/'+phone_number, None)
         # Do they already have an account?
         if user_exists == None:
-          hash_password = hashlib.sha224(password1).hexdigest()
-          insert_data = {
-            'hash_password': hash_password
-          }
-          inserted_user = firebase.post('/users/'+phone_number, insert_data)
+          hash_password = hashlib.sha224(password1).hexdigest()          
+          inserted_user = firebase.put('/users/'+phone_number, 'hash_password', hash_password)
           # All is good, the user is logged in!
           session['logged_in'] = True
       print('register', request.form['phonenumber'], request.form['password2'])
@@ -43,7 +58,7 @@ def login():
     return redirect(url_for('main'))
   return render_template('login.html')
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def main():
   if not session.get('logged_in'):
     return redirect(url_for('login'))
@@ -51,9 +66,13 @@ def main():
   # send_money.setup_phone("6584517058", "5184680430000006", "expiry")
   # send_money.setup_phone("13014672877", "5184680430000279", "expiry")
   # send_money.setup_phone("13014672879", "5184680430000261", "expiry")
+  if request.method == 'POST':
+    session['logged_in'] = False
+    return redirect(url_for('login'))
   return render_template('main.html')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host = "0.0.0.0")
+    
 
 
