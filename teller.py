@@ -73,7 +73,7 @@ def main():
   if request.method == 'POST' and 'submit2' in request.form.keys():
     session['logged_in'] = False
     return redirect(url_for('login'))
-  return render_template('main.html')
+  return render_template('main.html', phone_number=session['phone_number'])
 
 
 @app.route('/sendmoney', methods=['GET', 'POST'])
