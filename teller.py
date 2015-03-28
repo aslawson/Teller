@@ -94,6 +94,16 @@ def sendmoney():
     rec_balance = firebase.get('/users/'+receiver_phone, None)['balance'] + number_amount
     firebase.put('/users/'+sender_phone, 'balance', session.get('balance'))
     firebase.put('/users/'+receiver_phone, 'balance', rec_balance)
+    diction = firebase.get('transactions', None)
+    deleted_sender = False
+    deleted_receiver = False
+    for k,v in diction.iteritems():
+      if v['from']==sender_phone and not deleted_sender:
+        firebase.delete('/transactions/',k)
+        deleted_sender = True
+      if v['from']==receiver_phone and not deleted_receiver:
+        firebase.delete('/transactions',k)
+        deleted_receiver = True
     return redirect(url_for('main'))
   if request.method == 'GET' and 'to' in request.args.keys():
     return render_template('sendmoney.html', to=request.args.get('to'))
