@@ -1,4 +1,5 @@
 Flask
 pycrypto
 python-firebase
-urllib3
+requests
+elementtree

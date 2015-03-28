@@ -4,7 +4,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 # Databasing libraries
 from firebase import firebase
 import hashlib
-import lib.sendmoney
+import lib.sendmoney as sendmoney
 
 app = Flask(__name__)
 app.config.update(dict(
@@ -14,7 +14,7 @@ app.config.update(dict(
 
 firebase = firebase.FirebaseApplication('https://teller.firebaseio.com', None)
 
-send_money = SendMoney()
+send_money = sendmoney.SendMoney()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,7 +48,7 @@ def main():
   if not session.get('logged_in'):
     return redirect(url_for('login'))
   # Application logic
-  send_money.transfer_request()
+  send_money.setup_phone("84517058", "5184680430000006", "expiry")
   return render_template('main.html')
 
 if __name__ == '__main__':
