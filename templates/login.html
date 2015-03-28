@@ -1,26 +1,26 @@
 {% extends "layout.html" %}
 {% block title %}Login{% endblock %}
 {% block body %}
+<h1>Teller</h1>
+<button class="login-button selected">Login</button>
 <link rel="stylesheet" href="../static/style/login.css" type="text/css">
-<h1>Welcome</h1>
-<h2>Login</h2>
 <form id="login-form" action="" method="post">
-  <label>Phone Number:</label>
-  <input type="text" name="phonenumber" size="30" value="{{ request.form.phonenumber }}">
-  <label>Passkey:</label>
-  <input type="password" name="password" size="30" value="{{ request.form.password }}">
-  <div class="actions"><input type="submit" value="Log in"></div>
+  <label>Phone Number</label>
+  <input type="text" name="phonenumber" size="30" value="{{ request.form.phonenumber }}" placeholder="13014672873">
+  <label>Password</label>
+  <input type="password" name="password" size="30" value="{{ request.form.password }}" placeholder="qwerty123">
+  <div class="actions"><input type="submit" value="Sign in"></div>
 </form>
-<a id="invalid-LogIn">Invalid log in.  Please try again</a>
-<h2>Register</h2>
+<button class="register-button">Register</button>
+<!-- <a id="invalid-LogIn">Invalid log in.  Please try again</a> -->
 <form id="register-form" action="" method="post">
   <dl>
-   <label>Phone Number:</label>
-    <input type="text" name="phonenumber" size="30" value="{{ request.form.phonenumber }}">
-    <label>Passkey:</label>
-    <input type="password" name="password1" size="30" value="{{ request.form.password1 }}">
-    <label>Passkey (confirmation):</label>
-    <input type="password" name="password2" size="30" value="{{ request.form.password2 }}">
+   <label>Phone Number</label>
+    <input type="text" name="phonenumber" size="30" value="{{ request.form.phonenumber }}"placeholder="13014672873">
+    <label>Password</label>
+    <input type="password" name="password1" size="30" value="{{ request.form.password1 }}"placeholder="qwerty123">
+    <label>Password (confirmation)</label>
+    <input type="password" name="password2" size="30" value="{{ request.form.password2 }}"placeholder="qwerty123">
   </dl>
   <div class="actions"><input type="submit" value="Register"></div>
 </form>
