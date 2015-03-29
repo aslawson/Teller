@@ -41,7 +41,7 @@ var userRef = tellerRef.child('users/'+phone);
 var transRef = tellerRef.child('transactions');
 var moveUpdate = true;
 
-var fc
+var fc;
 
 function getgeo(position) {
   var coords = position.coords;
@@ -59,6 +59,12 @@ function getgeo(position) {
     latitude: latitude,
     longitude: longitude,
   });
+}
+
+if (typeof(Number.prototype.toRad) === "undefined") {
+  Number.prototype.toRad = function() {
+    return this * Math.PI / 180;
+  }
 }
 
 function getDistance(lat1,lon1,lat2,lon2){
@@ -99,7 +105,9 @@ function addOtherFriends() {
               if (trans[transkey].from == key) {
                 var a = trans[transkey].amt;
                 console.log(trans[transkey].to==phone);
-                if (getDistance(fc[0], fc[1],userlat,userlong) < document.getElementById("range").innerHTML*1000) {               
+                var range = document.getElementById("range").innerHTML;
+                console.log(range);
+                if (getDistance(fc[0], fc[1],userlat,userlong) < range) {               
                   if (trans[transkey].to == phone) {
                     markie = markie_match;
                   }
