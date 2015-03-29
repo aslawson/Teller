@@ -1,6 +1,7 @@
 $(document).ready(function() {
   $("#register-form").hide();
   $("#login-form").show();
+  $("#loading").hide();
   changeSelection();
   $(".register-button").click(function() {
     $("#login-form").slideUp();
@@ -15,6 +16,10 @@ $(document).ready(function() {
     $("#login-form").slideDown();
     $('.login-button').addClass('selected');
     changeSelection();
+  });
+  $('form').submit(function() {
+    $("body").children().hide();
+    $("#loading").show();
   });
 });
 
