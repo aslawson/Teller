@@ -4,9 +4,9 @@
 <h1>Transfer Funds</h1>
 <form action="" method="post">
   <label>Receiver's Phone</label>
-  <input type="text" name="receiver_phone" size="30" value="{{ request.form.receiver_phone }}" placeholder="13014672873">
+  <input type="text" name="receiver_phone" size="30" value="{{ to }}" placeholder="13014672873">
   <label>Amount</label>
-  <input type="password" name="amount" size="30" value="{{ request.form.amount }}" placeholder="100.00">
+  <input type="text" name="amount" size="30" value="{{ request.form.amount }}" placeholder="100.00">
   <div><input type="submit" value="Send"></div>
 </form>
 {% endblock %}

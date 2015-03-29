@@ -9,11 +9,13 @@
 <div class="middle-area">
   <div id='map'></div>
 </div>
-<form id="login-form" action="inserttransaction" method="post">
+<form action="inserttransaction" method="post">
   <label>Amount</label>
   <input type="text" name="amount" size="30" value="{{ request.form.amount }}" placeholder="00.00">
   <input type="radio" name="transaction_type" value="Deposit" checked>Deposit
   <input type="radio" name="transaction_type" value="Withdraw">Withdraw
+  <label>Search distance: <span id="range">1</span>km</label>
+  <input type="range" min="1" max="20" value="1" step="1" onchange="showValue(this.value)" />
   <div class="actions"><input type="submit" value="Find Transaction"></div>
 </form>
 <div>
@@ -24,19 +26,29 @@
  </form>
 </div>
 
+
 <script>
+  
+function showValue(newValue)
+{
+	document.getElementById("range").innerHTML=newValue;
+}
 
 var phone = $("em.phone").html();
 console.log(phone);
 var tellerRef = new Firebase("https://teller.firebaseio.com/");
 var userRef = tellerRef.child('users/'+phone);
+var transRef = tellerRef.child('transactions');
 var moveUpdate = true;
+
+var fc;
 
 function getgeo(position) {
   var coords = position.coords;
   var latitude = coords.latitude;
   var longitude = coords.longitude;
   var latlongobj = L.latLng(latitude, longitude);
+  fc = [latitude, longitude];
   console.log(latitude,longitude);
   marker.setLatLng(latlongobj);
   if (moveUpdate) {
@@ -49,6 +61,22 @@ function getgeo(position) {
   });
 }
 
+if (typeof(Number.prototype.toRad) === "undefined") {
+  Number.prototype.toRad = function() {
+    return this * Math.PI / 180;
+  }
+}
+
+function getDistance(lat1,lon1,lat2,lon2){
+  var R = 6371; // km var 
+  dLat = (lat2-lat1).toRad(); 
+  var dLon = (lon2-lon1).toRad(); 
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; d=(d.toFixed(2)); 
+  console.log(d);
+  return d }
+  
 function addOtherFriends() {
   for (var i=0;i<other_markers.length;++i) {
     map.removeLayer(other_markers[i]);
@@ -60,26 +88,58 @@ function addOtherFriends() {
         if ('latitude' in users[key]) {
           var userlat = users[key].latitude;
           var userlong = users[key].longitude;
-          var markie = L.marker([userlat, userlong], {
-              icon: L.mapbox.marker.icon({
-                'marker-color': '#84f897'
-              })
+          var markie_default = L.marker([userlat, userlong], {
+            icon: L.mapbox.marker.icon({
+              'marker-color': '#f86767'
+            }) //default
           });
-          markie.bindPopup(key);
+          var markie_match = L.marker([userlat, userlong], {
+            icon: L.mapbox.marker.icon({
+              'marker-color': '#84f897'
+            }) //default
+          });
+          var markie = markie_default;
+          transRef.on("value", function(snapshot) {
+            trans = snapshot.val();
+            for (var transkey in trans) {
+              if (trans[transkey].from == key) {
+                var a = trans[transkey].amt;
+                console.log(trans[transkey].to==phone);
+                var range = document.getElementById("range").innerHTML;
+                console.log(range);
+                if (getDistance(fc[0], fc[1],userlat,userlong) < range) {               
+                  if (trans[transkey].to == phone) {
+                    markie = markie_match;
+                  }
+                }
+                var popup;
+                if (a < 0)
+                  popup = (key + "<br>deposit: " + Math.abs(a));
+                else
+                  popup = (key + "<br>withdraw: " + a);
+                var link_out = "/sendmoney?to="+trans[transkey].from;
+                popup += "<br><a class='bubble' href='"+link_out+"'>Go</a>"
+                markie.bindPopup(popup);
+              }
+            }
+          });
           markie.addTo(map);
           other_markers.push(markie);
         }
       }
     }
   });
+
 }
+  
+
 
 L.mapbox.accessToken = 'pk.eyJ1IjoicmF5bW9uZGphY29ic29uIiwiYSI6IlVlWnVITTQifQ.lzpdThXgyxuWTS2WQBTqVg';
 var map = L.mapbox.map('map', 'examples.map-h67hf2ic')
   .setView([29, -26], 14);
 var marker = L.marker([-73, 40], {
     icon: L.mapbox.marker.icon({
-      'marker-color': '#f86767'
+      'marker-color': '#44c6f8'
     })
 });
 

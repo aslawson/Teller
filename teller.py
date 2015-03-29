@@ -39,7 +39,7 @@ def login():
         if hash_password == result['hash_password']:
           # Successful Log In
           session['phone_number'] = phone_number
-          session['balance'] = firebase.get('/users/'+phone_number)['balance']
+          session['balance'] = firebase.get('/users/'+phone_number, None)['balance']
           session['logged_in'] = True
         else: 
           print ('')#TODO - change "Invalid log in" statement to visabe
@@ -87,8 +87,26 @@ def sendmoney():
     sender_phone = session['phone_number']
     receiver_phone = request.form['receiver_phone']
     amount = request.form['amount']
+    number_amount = float(amount)
     send_money.transfer_request(sender_phone, receiver_phone, amount)
+    # should be "atomic"
+    session['balance'] = firebase.get('/users/'+sender_phone, None)['balance'] - number_amount
+    rec_balance = firebase.get('/users/'+receiver_phone, None)['balance'] + number_amount
+    firebase.put('/users/'+sender_phone, 'balance', session.get('balance'))
+    firebase.put('/users/'+receiver_phone, 'balance', rec_balance)
+    diction = firebase.get('transactions', None)
+    deleted_sender = False
+    deleted_receiver = False
+    for k,v in diction.iteritems():
+      if v['from']==sender_phone and not deleted_sender:
+        firebase.delete('/transactions/',k)
+        deleted_sender = True
+      if v['from']==receiver_phone and not deleted_receiver:
+        firebase.delete('/transactions',k)
+        deleted_receiver = True
     return redirect(url_for('main'))
+  if request.method == 'GET' and 'to' in request.args.keys():
+    return render_template('sendmoney.html', to=request.args.get('to'))
   return render_template('sendmoney.html')
 
 @app.route('/inserttransaction', methods=['POST'])
@@ -98,19 +116,21 @@ def inserttransaction():
 
   if request.form['transaction_type'] == "Deposit":
     amount = 0 - amount
-  firebase.post('/transactions/', {'amt': amount, 'to': None, 'from': session.get('phone_number')})
+  ins = firebase.post('/transactions/', {'amt': amount, 'to': None, 'from': session.get('phone_number')})['name']
+  print ins
   need = 0 - amount
   
   matchlist = []
   diction = firebase.get('transactions', None)
   for k,v in diction.iteritems():
     if (need > 0 and v['amt'] < 1.1*need and v['amt'] > .9*need):
-      matchlist.append(v)
+      matchlist.append((k,v))
     elif (need < 0 and v['amt'] > 1.1*need and v['amt'] < .9*need):
-      matchlist.append(v)
+      matchlist.append((k,v))
   
-  for v in matchlist:
-    print v
+  for k in matchlist:
+    firebase.put('/transactions/'+k[0], 'to', session.get('phone_number'))
+    firebase.put('/transactions/'+ins, 'to', k[1]['from'])
   #result = firebase.get('/transactions/amt' < 1.1*need or '/transactions/amt' > .9*need, None)
   #print result
   return redirect(url_for('main'))
