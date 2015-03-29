@@ -17,9 +17,10 @@ header {
 .container {
   margin: 0;
   padding: 0;
-  height: 100vh;
+  min-height: 100vh;
   background-position: #FFFFFF;
-  text-align: center
+  text-align: center;
+  padding-bottom: 20px;
 }
 
 .middle-area {
@@ -115,17 +116,49 @@ button {
   border: none;
   width: 100%;
   border-radius: 0px;
-  background: #ddd;
+  background: #eee;
   font-size: 12px;
   font-weight: bold;
 }
 button:hover {
   background: #6dccfd;
 }
+input[type="range"] {
+  margin: 0 auto;
+  border: none;
+  -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 10px;
+  background: #eee;
+  border: none;
+  border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #ddd;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #fefefe;
+  margin-top: -8px;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ddd;
+}
 
 #map { position:relative; top:0; bottom:0; width: 100%; height:250px; }
 #loading {
   visibility: none;
+  display: none;
   position: absolute;
   top: 45%;
   text-align: center;
