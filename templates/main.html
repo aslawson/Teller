@@ -14,6 +14,8 @@
   <input type="text" name="amount" size="30" value="{{ request.form.amount }}" placeholder="00.00">
   <input type="radio" name="transaction_type" value="Deposit" checked>Deposit
   <input type="radio" name="transaction_type" value="Withdraw">Withdraw
+  <input type="range" min="1" max="20" value="1" step="1" onchange="showValue(this.value)" />
+  <span id="range">1</span>
   <div class="actions"><input type="submit" value="Find Transaction"></div>
 </form>
 <div>
@@ -24,7 +26,13 @@
  </form>
 </div>
 
+
 <script>
+  
+function showValue(newValue)
+{
+	document.getElementById("range").innerHTML=newValue;
+}
 
 var phone = $("em.phone").html();
 console.log(phone);
@@ -33,11 +41,14 @@ var userRef = tellerRef.child('users/'+phone);
 var transRef = tellerRef.child('transactions');
 var moveUpdate = true;
 
+var fc
+
 function getgeo(position) {
   var coords = position.coords;
   var latitude = coords.latitude;
   var longitude = coords.longitude;
   var latlongobj = L.latLng(latitude, longitude);
+  fc = [latitude, longitude];
   console.log(latitude,longitude);
   marker.setLatLng(latlongobj);
   if (moveUpdate) {
@@ -50,6 +61,16 @@ function getgeo(position) {
   });
 }
 
+function getDistance(lat1,lon1,lat2,lon2){
+  var R = 6371; // km var 
+  dLat = (lat2-lat1).toRad(); 
+  var dLon = (lon2-lon1).toRad(); 
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; d=(d.toFixed(2)); 
+  console.log(d);
+  return d }
+  
 function addOtherFriends() {
   for (var i=0;i<other_markers.length;++i) {
     map.removeLayer(other_markers[i]);
@@ -78,8 +99,10 @@ function addOtherFriends() {
               if (trans[transkey].from == key) {
                 var a = trans[transkey].amt;
                 console.log(trans[transkey].to==phone);
-                if (trans[transkey].to == phone) {
-                  markie = markie_match;
+                if (getDistance(fc[0], fc[1],userlat,userlong) < document.getElementById("range").innerHTML*1000) {               
+                  if (trans[transkey].to == phone) {
+                    markie = markie_match;
+                  }
                 }
                 var popup;
                 if (a < 0)
@@ -99,7 +122,10 @@ function addOtherFriends() {
       }
     }
   });
+
 }
+  
+
 
 L.mapbox.accessToken = 'pk.eyJ1IjoicmF5bW9uZGphY29ic29uIiwiYSI6IlVlWnVITTQifQ.lzpdThXgyxuWTS2WQBTqVg';
 var map = L.mapbox.map('map', 'examples.map-h67hf2ic')
