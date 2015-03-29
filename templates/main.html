@@ -9,7 +9,7 @@
 <div class="middle-area">
   <div id='map'></div>
 </div>
-<form id="login-form" action="inserttransaction" method="post">
+<form action="inserttransaction" method="post">
   <label>Amount</label>
   <input type="text" name="amount" size="30" value="{{ request.form.amount }}" placeholder="00.00">
   <input type="radio" name="transaction_type" value="Deposit" checked>Deposit

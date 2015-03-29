@@ -19,6 +19,6 @@ $(document).ready(function() {
 });
 
 function changeSelection() {
-  $('button').css('background', '#ccc');
+  $('button').css('background', '#eee');
   $('.selected').css('background', '#6dccfd');
 }

@@ -61,7 +61,14 @@ i {
 label {
   display: block;
 }
+#login-form {
+  background: url('../mapbg.png');
+  margin: 0;
+  padding: 30px 0px 20px;
+  color: #FEFEFE;
+}
 input, button {
+  background: rgba(0,0,0,0);
   text-transform: uppercase;
   display: block;
   margin: 10px auto 20px;
@@ -99,12 +106,13 @@ input[type="submit"]:hover {
   color: #6dccfd;
 }
 button {
+  margin: 0;
   cursor: pointer;
   height: 50px;
   border: none;
   width: 100%;
   border-radius: 0px;
-  background: #ccc;
+  background: #ddd;
   font-size: 12px;
   font-weight: bold;
 }
